@@ -85,8 +85,8 @@ export class RPC {
     });
   }
 
-  getTransaction(txid: string, callback: CallbackType) {
-    this.callMethod('getrawtransaction', [txid, true], (err, result) => {
+  getTransaction(txid: string, verbose:boolean, callback: CallbackType) {
+    this.callMethod('getrawtransaction', [txid, verbose], (err, result) => {
       if (err) {
         return callback(err);
       }
