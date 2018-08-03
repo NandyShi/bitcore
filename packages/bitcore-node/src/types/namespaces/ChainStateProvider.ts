@@ -112,6 +112,7 @@ export declare namespace CSP {
     streamAddressTransactions(params: StreamAddressUtxosParams): any;
     streamTransactions(params: StreamTransactionsParams): any;
     getTransaction(params: StreamTransactionParams): Promise<any>;
+    streamTransactionRaw(params: StreamTransactionParams): Promise<any>;
     streamWalletAddresses(params: StreamWalletAddressesParams): any;
     streamWalletTransactions(params: StreamWalletTransactionsParams): any;
     streamWalletUtxos(params: StreamWalletUtxosParams): any;

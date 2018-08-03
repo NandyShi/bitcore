@@ -66,6 +66,23 @@ router.get('/:txid/coins', (req, res, next) => {
   }
 });
 
+router.get('/:txId/raw', async function(req, res) {
+    let { chain, network, txId } = req.params;
+    if (typeof txId !== 'string' || !chain || !network) {
+      return res.status(400).send('Missing required param');
+    }
+    chain = chain.toUpperCase();
+    network = network.toLowerCase();
+
+    try {
+        const rawTx = await ChainStateProvider.streamTransactionRaw({ chain, network, txId });
+        return res.status(200).send(rawTx);
+    } catch (err) {
+        logger.error(err);
+        return res.status(500).send(err.message);
+    }
+});
+
 router.post('/send', async function(req, res) {
   try {
     let { chain, network } = req.params;

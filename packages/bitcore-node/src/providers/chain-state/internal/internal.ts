@@ -195,6 +195,26 @@ export class InternalStateProvider implements CSP.IChainStateService {
     }
   }
 
+async streamTransactionRaw(params: CSP.StreamTransactionParams) {
+    let { chain, network, txId } = params;
+    if (typeof txId !== 'string' || !this.chain || !network) {
+      throw 'Missing required param';
+    }
+
+    return new Promise((resolve, reject) => {
+        this.getRPC(chain, network).getTransaction(txId, true, (err: any, result: any) => {
+            if (err){
+                reject(err);
+            }else{
+                const transaction = typeof result !== "undefined" ? {rawTx : result.hex} : [];
+                resolve(transaction);
+            }
+        });
+      });
+    
+    
+  }
+
   async createWallet(params: CSP.CreateWalletParams) {
     const { chain, network, name, pubKey, path, singleAddress } = params;
     if (typeof name !== 'string' || !network) {
