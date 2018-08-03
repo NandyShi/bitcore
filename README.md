@@ -1,4 +1,4 @@
-Bitcore Node
+Bitcore Node (supports: BTC, BCH, LTC)
 ============
 _Requirements_:
 - Trusted P2P Peer
