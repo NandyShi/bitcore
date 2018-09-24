@@ -143,6 +143,7 @@ export class Block extends BaseModel<IBlock> {
     if (!localTip || localTip.height === 0) {
       return false;
     }
+    logger.info(`Throwing away block ${localTip.hash} at height ${localTip.height}`);
     logger.info(`Resetting tip to ${localTip.previousBlockHash}`, { chain, network });
     await this.collection.deleteMany({ chain, network, height: { $gte: localTip.height } });
     await TransactionModel.collection.deleteMany({ chain, network, blockHeight: { $gte: localTip.height } });
