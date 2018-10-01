@@ -22,6 +22,7 @@ export class P2pService {
   private pool: any;
   private invCache: any;
   private initialSyncComplete: boolean;
+  private blockProcessLock : boolean;
   constructor(params) {
     const { chain, network, chainConfig } = params;
     this.chain = chain;
@@ -31,6 +32,7 @@ export class P2pService {
     this.chainConfig = chainConfig;
     this.events = new EventEmitter();
     this.syncing = false;
+    this.blockProcessLock = false;
     this.initialSyncComplete = false;
     this.invCache = new LRU({ max: 10000 });
     this.messages = new this.bitcoreP2p.Messages({
@@ -96,8 +98,18 @@ export class P2pService {
       if (!this.invCache.get(hash)) {
         this.invCache.set(hash);
         this.events.emit(hash, message.block);
-        this.events.emit('block', message.block);
-        this.sync();
+        if (!this.syncing && !this.blockProcessLock) {
+          try {
+            await this.processBlock(block);
+            this.events.emit('block', message.block);
+          } catch (err) {
+            logger.error(`Error syncing ${this.chain} ${this.network}`, err);
+            this.sync();
+          }
+        }else if (this.blockProcessLock){
+          logger.warn(`Can't process block while currently processing another block ${this.chain} ${this.network}`);
+          this.sync();
+        }
       }
     });
 
@@ -199,6 +211,10 @@ export class P2pService {
   }
 
   async processBlock(block): Promise<any> {
+    if (this.blockProcessLock){
+      return;
+    }
+    this.blockProcessLock = true;
     return new Promise(async (resolve, reject) => {
       try {
         await BlockModel.addBlock({
@@ -215,8 +231,10 @@ export class P2pService {
             network: this.network
           });
         }
+        this.blockProcessLock = false;
         resolve();
       } catch (err) {
+        this.blockProcessLock = false;
         reject(err);
       }
     });
