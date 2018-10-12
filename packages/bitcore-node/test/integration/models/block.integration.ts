@@ -294,6 +294,7 @@ describe('Block Model', function() {
         fee: 100,
         coinbase: true,
         locktime: 0,
+        raw: '',
         size: 145,
         wallets: [],
         blockHeight: 5
@@ -309,6 +310,7 @@ describe('Block Model', function() {
         fee: 100,
         coinbase: true,
         locktime: 0,
+        raw: '',
         size: 145,
         wallets: [],
         blockHeight: 6
@@ -323,6 +325,7 @@ describe('Block Model', function() {
         value: 100000,
         fee: 100,
         coinbase: true,
+        raw: '',
         locktime: 0,
         size: 145,
         wallets: [],
@@ -339,6 +342,7 @@ describe('Block Model', function() {
         fee: 100,
         coinbase: true,
         locktime: 0,
+        raw: '',
         size: 145,
         wallets: [],
         blockHeight: 7
